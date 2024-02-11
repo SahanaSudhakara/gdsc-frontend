@@ -10,7 +10,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import coil.compose.rememberImagePainter
 import com.plcoding.composegooglesignincleanarchitecture.presentation.sign_in.UserData
 
 @Composable
@@ -21,13 +20,13 @@ fun ProfileTab(userData: UserData?, onSignOut: () -> Unit, onClick: () -> Unit) 
             .clickable(onClick = onClick)
     ) {
         userData?.profilePictureUrl?.let { url ->
-            Image(
-                painter = rememberImagePainter(url),
+            /*Image(
+              //  painter = rememberImagePainter(url),
                 contentDescription = "Profile picture",
                 modifier = Modifier.size(48.dp),
                 contentScale = ContentScale.Crop,
                 // Remove the shape parameter as Image() does not support it
-            )
+            )*/
         }
     }
 }

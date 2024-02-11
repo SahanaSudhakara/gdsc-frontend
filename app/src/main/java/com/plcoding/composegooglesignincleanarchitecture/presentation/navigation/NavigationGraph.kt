@@ -1,6 +1,7 @@
 package com.plcoding.composegooglesignincleanarchitecture.presentation.navigation
 
 import HomeScreen
+import MapViewModel
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.IntentSenderRequest
@@ -14,7 +15,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.plcoding.composegooglesignincleanarchitecture.presentation.homescreen.MapViewModel
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.libraries.places.api.net.PlacesClient
 import com.plcoding.composegooglesignincleanarchitecture.presentation.sign_in.GoogleAuthUiClient
 import com.plcoding.composegooglesignincleanarchitecture.presentation.sign_in.SignInScreen
 import com.plcoding.composegooglesignincleanarchitecture.presentation.sign_in.SignInViewModel
@@ -25,8 +27,9 @@ fun NavigationGraph(
     navController: NavHostController,
     googleAuthUiClient: GoogleAuthUiClient,
     viewModel: SignInViewModel,
-    launcher: ActivityResultLauncher<IntentSenderRequest>
-) {
+    launcher: ActivityResultLauncher<IntentSenderRequest>,
+    placesClient: PlacesClient
+){
     NavHost(navController = navController, startDestination = "sign_in") {
         composable("sign_in") {
             val state by viewModel.state.collectAsStateWithLifecycle()
@@ -71,23 +74,12 @@ fun NavigationGraph(
         }
         composable("Home") {
             val userData by remember { mutableStateOf(googleAuthUiClient.getSignedInUser()) }
-            val coroutineScope = rememberCoroutineScope() // Create a new coroutine scope
-            val viewModel=MapViewModel()
+            val coroutineScope = rememberCoroutineScope()
+            val viewModel = MapViewModel(placesClient) //Inject into MapViewModel
             HomeScreen(
-                viewModel,
-                userData = userData
-            ) {
-                coroutineScope.launch { // Execute the signOut function within a coroutine scope
-                    googleAuthUiClient.signOut()
-                    Toast.makeText(
-                        navController.context,
-                        "Signed out",
-                        Toast.LENGTH_LONG
-                    ).show()
-
-                    navController.popBackStack()
-                }
-            }
+                viewModel
+            )
         }
-    }
+        }
+
 }

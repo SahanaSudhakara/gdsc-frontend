@@ -13,6 +13,9 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.rememberNavController
 import com.google.android.gms.auth.api.identity.Identity
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.maps.MapView
+import com.google.android.libraries.places.api.Places
 import com.plcoding.composegooglesignincleanarchitecture.presentation.navigation.NavigationGraph
 import com.plcoding.composegooglesignincleanarchitecture.presentation.sign_in.GoogleAuthUiClient
 import com.plcoding.composegooglesignincleanarchitecture.presentation.sign_in.SignInViewModel
@@ -38,40 +41,27 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colors.background
                 ) {
                     val navController = rememberNavController()
-                    val googleAuthUiClient by lazy {
-                        GoogleAuthUiClient(
-                            context = applicationContext,
-                            oneTapClient = Identity.getSignInClient(applicationContext)
-                        )
-                    }
                     val viewModel = viewModel<SignInViewModel>()
 
                     val launcher = rememberLauncherForActivityResult(
                         contract = ActivityResultContracts.StartIntentSenderForResult(),
                         onResult = { result ->
-                            if (result.resultCode == RESULT_OK) {
-                                navController.currentBackStackEntry?.let { entry ->
-                                    lifecycleScope.launch {
-                                        val signInResult = googleAuthUiClient.signInWithIntent(
-                                            intent = result.data ?: return@launch
-                                        )
-                                        viewModel.onSignInResult(signInResult)
-                                    }
-                                }
-                            }
+                            // ...
                         }
                     )
 
+                    Places.initialize(applicationContext, BuildConfig.MAPS_API_KEY)
+                    val placesClient = Places.createClient(this) // Use 'this' for context
 
                     NavigationGraph(
                         navController = navController,
                         googleAuthUiClient = googleAuthUiClient,
                         viewModel = viewModel,
-                        launcher = launcher
+                        launcher = launcher,
+                        placesClient = placesClient
                     )
                 }
             }
         }
-
     }
 }
