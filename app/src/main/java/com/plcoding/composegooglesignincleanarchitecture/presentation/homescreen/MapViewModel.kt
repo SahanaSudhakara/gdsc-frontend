@@ -23,6 +23,13 @@ data class AutocompleteResult(
     val placeId: String,
 )
 
+data class MarkerData(
+    val latitude: Double,
+    val longitude: Double,
+    val title: String? = null,
+    val snippet: String? = null
+)
+
 @HiltViewModel
 class MapViewModel @Inject constructor(
     private val placesClient: PlacesClient
@@ -51,7 +58,7 @@ class MapViewModel @Inject constructor(
             }
         }
     }
-
+// https://www.droidcon.com/2023/10/01/mapping-experiences-with-google-maps-and-jetpack-compose/
     fun getCoordinates(result: AutocompleteResult) {
         val placeFields = listOf(Place.Field.LAT_LNG)
         val request = FetchPlaceRequest.newInstance(result.placeId, placeFields)
@@ -63,5 +70,9 @@ class MapViewModel @Inject constructor(
         }.addOnFailureListener { exception ->
             exception.printStackTrace()
         }
+    }
+
+    fun getCurrentLocation(): LatLng {
+        return currentLatLong.value
     }
 }

@@ -77,7 +77,7 @@ fun NavigationGraph(
             val coroutineScope = rememberCoroutineScope()
             val viewModel = MapViewModel(placesClient) //Inject into MapViewModel
             HomeScreen(
-                viewModel
+                viewModel,googleAuthUiClient
             )
         }
         }

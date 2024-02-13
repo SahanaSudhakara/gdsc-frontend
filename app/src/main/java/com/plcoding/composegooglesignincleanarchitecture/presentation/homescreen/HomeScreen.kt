@@ -1,3 +1,4 @@
+import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -22,12 +23,14 @@ import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.Switch
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.Alignment.Horizontal
 import androidx.compose.ui.unit.dp
+import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.GoogleMap
@@ -36,9 +39,12 @@ import com.google.maps.android.compose.MapType
 import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.rememberCameraPositionState
+import com.plcoding.composegooglesignincleanarchitecture.presentation.profile.ProfileTab
+import com.plcoding.composegooglesignincleanarchitecture.presentation.sign_in.GoogleAuthUiClient
+import kotlinx.coroutines.delay
 
 @Composable
-fun HomeScreen(viewModel: MapViewModel) {
+fun HomeScreen(viewModel: MapViewModel,googleAuthUiClient:GoogleAuthUiClient) {
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -58,9 +64,17 @@ fun HomeScreen(viewModel: MapViewModel) {
                 title = "San Jose"
             )
         }
+        Button(
+            onClick = {
+                cameraPosition.move(CameraUpdateFactory.newLatLng(viewModel.getCurrentLocation()))
+            }
+        ) {
+            Text("Animate to current position")
+        }
+        }
         Surface(
             modifier = Modifier
-                .align(Alignment.BottomCenter)
+              //  .align(Alignment.TopEnd)
                 .padding(8.dp)
                 .fillMaxWidth(),
             color = Color.White,
@@ -70,6 +84,7 @@ fun HomeScreen(viewModel: MapViewModel) {
                 modifier = Modifier.padding(16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
+
                 var text by remember { mutableStateOf("") }
 
                 AnimatedVisibility(
@@ -98,6 +113,15 @@ fun HomeScreen(viewModel: MapViewModel) {
                     }
                     Spacer(Modifier.height(16.dp))
                 }
+                ProfileTab(
+                    userData = googleAuthUiClient.getSignedInUser(),
+                    onSignOut = {
+                    },
+                    onClick = {
+
+                    }
+                )
+
                 OutlinedTextField(
                     value = text,
                     onValueChange = {
@@ -111,5 +135,4 @@ fun HomeScreen(viewModel: MapViewModel) {
             }
         }
     }
-}
 
