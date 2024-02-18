@@ -1,7 +1,23 @@
 package com.plcoding.composegooglesignincleanarchitecture.presentation.navigation
 
-object Routes {
-    const val PROFILE_SCREEN="PROFILE_SCREEN";
-    const val SIGNIN_SCREEN="SIGNIN_SCREEN";
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
+
+sealed class Screen {
+
+    object SignUpScreen : Screen()
+    object Report : Screen()
+    object LoginScreen : Screen()
+    object HomeScreen : Screen()
+}
+
+object NavigationAppRouter {
+
+    var currentScreen: MutableState<Screen> = mutableStateOf(Screen.SignUpScreen)
+
+    fun navigateTo(destination : Screen){
+        currentScreen.value = destination
+    }
+
 
 }

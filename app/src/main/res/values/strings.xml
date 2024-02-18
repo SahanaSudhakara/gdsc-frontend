@@ -1,4 +1,5 @@
 <resources>
-    <string name="app_name">SignInGDSCCleanArchitecture</string>
+    <string name="app_name">SignInGDSC</string>
     <string name="web_client_id">408157974280-bcsk8oubl7epbui8gruu1kha2u9e310k.apps.googleusercontent.com</string>
+    <string name="hello">Hey There!</string>
 </resources>

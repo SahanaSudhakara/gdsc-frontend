@@ -1,4 +1,4 @@
-package com.plcoding.composegooglesignincleanarchitecture.presentation.sign_in
+package com.plcoding.composegooglesignincleanarchitecture.presentation.sign_in.register
 
 data class SignInResult(
     val data: UserData?,

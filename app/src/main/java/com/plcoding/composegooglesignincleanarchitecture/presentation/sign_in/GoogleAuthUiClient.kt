@@ -10,6 +10,8 @@ import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.plcoding.composegooglesignincleanarchitecture.R
+import com.plcoding.composegooglesignincleanarchitecture.presentation.sign_in.register.SignInResult
+import com.plcoding.composegooglesignincleanarchitecture.presentation.sign_in.register.UserData
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.tasks.await
 
