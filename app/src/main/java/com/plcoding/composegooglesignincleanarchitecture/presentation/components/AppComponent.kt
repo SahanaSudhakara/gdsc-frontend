@@ -21,7 +21,11 @@ import androidx.compose.material.IconButton
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
 import androidx.compose.material.TextFieldDefaults
+import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Logout
+import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.runtime.Composable
@@ -272,5 +276,42 @@ fun ClickableLoginTextComponent(tryingToLogin: Boolean = true, onTextSelected: (
                 }
 
         },
+    )
+}
+@Composable
+fun AppToolbar(
+    toolbarTitle: String, logoutButtonClicked: () -> Unit,
+    navigationIconClicked: () -> Unit
+) {
+
+    TopAppBar(
+        backgroundColor = Primary,
+        title = {
+            Text(
+                text = toolbarTitle, color =  Color.White
+            )
+        },
+        navigationIcon = {
+            IconButton(onClick = {
+               // navigationIconClicked.invoke()
+            }) {
+                Icon(
+                    imageVector = Icons.Filled.Home,
+                    contentDescription ="Home",
+                    tint = Color.White
+                )
+            }
+
+        },
+        actions = {
+            IconButton(onClick = {
+                logoutButtonClicked.invoke()
+            }) {
+                Icon(
+                    imageVector = Icons.Filled.Logout,
+                    contentDescription = "Logout",
+                )
+            }
+        }
     )
 }

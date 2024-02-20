@@ -1,3 +1,4 @@
+import android.content.ContentValues.TAG
 import android.util.Log
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -8,6 +9,7 @@ import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.api.net.FetchPlaceRequest
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest
 import com.google.android.libraries.places.api.net.PlacesClient
+import com.google.firebase.auth.FirebaseAuth
 import com.plcoding.composegooglesignincleanarchitecture.presentation.homescreen.MapEvent
 import com.plcoding.composegooglesignincleanarchitecture.presentation.homescreen.MapState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -31,6 +33,10 @@ class MapViewModel @Inject constructor(
 
     var updateLatLng = mutableStateOf(false)
     var newLatLng=LatLng(37.3496, -121.9381)
+
+    private val _navigateToLogin = MutableStateFlow(false)
+
+    var navigateToLogin: StateFlow<Boolean> = _navigateToLogin
 
     val locationAutofill = mutableStateListOf<AutocompleteResult>()
     fun onEvent(event: MapEvent) {
@@ -91,6 +97,24 @@ class MapViewModel @Inject constructor(
         }
     }
 
+    fun logout() {
+
+        val firebaseAuth = FirebaseAuth.getInstance()
+
+        firebaseAuth.signOut()
+
+        val authStateListener = FirebaseAuth.AuthStateListener {
+            if (it.currentUser == null) {
+                Log.d(TAG, "Inside sign outsuccess")
+               _navigateToLogin.value=true
+            } else {
+                Log.d(TAG, "Inside sign out is not complete")
+            }
+        }
+
+        firebaseAuth.addAuthStateListener(authStateListener)
+
+    }
 
 
 }

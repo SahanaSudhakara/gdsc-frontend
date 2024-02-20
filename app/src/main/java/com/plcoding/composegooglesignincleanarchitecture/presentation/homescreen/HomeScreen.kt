@@ -27,6 +27,7 @@ import androidx.compose.material.IconButton
 import androidx.compose.material.LocalTextStyle
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedTextField
+import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
@@ -53,10 +54,13 @@ import com.google.maps.android.compose.rememberCameraPositionState
 import com.plcoding.composegooglesignincleanarchitecture.presentation.homescreen.MapEvent
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
+import androidx.navigation.NavController
 import com.google.maps.android.compose.MapUiSettings
+import com.plcoding.composegooglesignincleanarchitecture.presentation.components.AppToolbar
+import com.plcoding.composegooglesignincleanarchitecture.presentation.navigation.Screen
 
 @Composable
-fun HomeScreen(viewModel: MapViewModel) {
+fun HomeScreen(viewModel: MapViewModel, navController: NavController) {
     val state by viewModel.mapState
     var text by remember { mutableStateOf("") }
     val selectedItem by remember { mutableStateOf<AutocompleteResult?>(null) }
@@ -67,77 +71,91 @@ fun HomeScreen(viewModel: MapViewModel) {
     val cameraPosition = rememberCameraPositionState {
         position = CameraPosition.fromLatLngZoom(state.markerState, 15f)
     }
-
-
-    Box(
-        modifier = Modifier.fillMaxSize()
-    ) {
-        GoogleMap(
-            properties = state.properties,
-            modifier = Modifier.fillMaxSize(),
-            cameraPositionState = cameraPosition,
-            uiSettings = MapUiSettings()
+    Scaffold(
+        topBar = {
+            AppToolbar(toolbarTitle = "Safe Spot", logoutButtonClicked = { viewModel.logout() }) {
+            }
+        }
+    )
+    {paddingValues ->
+        Box(
+            modifier = Modifier.fillMaxSize().padding(paddingValues)
         ) {
-            // Add Marker inside GoogleMap
-            markerPosition?.let { position ->
-                Marker(
-                    state = MarkerState(position = position),
-                    title = "title",
-                    draggable = true
+            GoogleMap(
+                properties = state.properties,
+                modifier = Modifier.fillMaxSize(),
+                cameraPositionState = cameraPosition,
+                uiSettings = MapUiSettings()
+            ) {
+                // Add Marker inside GoogleMap
+                markerPosition?.let { position ->
+                    Marker(
+                        state = MarkerState(position = position),
+                        title = "title",
+                        draggable = true
+                    )
+                }
+            }
+
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.Top,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                val localFocusManager=LocalFocusManager.current
+                TextField(
+                    value = text,
+                    onValueChange = { text = it },
+                    label = { Text("Search") },
+                    leadingIcon = { Icon(Icons.Filled.Search, contentDescription = null) },
+                    modifier = Modifier.fillMaxWidth(),
+                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
+                    keyboardActions = KeyboardActions(onAny = {
+                        viewModel.onEvent(MapEvent.SearchName(text))
+                        // localFocusManager.clearFocus()
+                    })
                 )
-            }
-        }
 
-        Column(
-            modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.Top,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            val localFocusManager=LocalFocusManager.current
-            TextField(
-                value = text,
-                onValueChange = { text = it },
-                label = { Text("Search") },
-                leadingIcon = { Icon(Icons.Filled.Search, contentDescription = null) },
-                modifier = Modifier.fillMaxWidth(),
-                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
-                keyboardActions = KeyboardActions(onAny = {
-                    viewModel.onEvent(MapEvent.SearchName(text))
-                   // localFocusManager.clearFocus()
-                })
-            )
+                Spacer(modifier = Modifier.height(16.dp))
 
-            Spacer(modifier = Modifier.height(16.dp))
+                LazyColumnWithSelection(
+                    items = viewModel.locationAutofill,
+                    text = text,
+                    onItemSelected = { selectedItem ->
+                        text = selectedItem.address
+                        viewModel.getCoordinates(selectedItem) { latLng ->
+                            if (latLng != null) {
+                                cameraPosition.position = CameraPosition.fromLatLngZoom(latLng, 10f)
+                                viewModel.newLatLng=latLng
+                                // Update the marker position by setting updateLatLng to true
+                                updateLatLng = true
 
-            LazyColumnWithSelection(
-                items = viewModel.locationAutofill,
-                text = text,
-                onItemSelected = { selectedItem ->
-                    text = selectedItem.address
-                    viewModel.getCoordinates(selectedItem) { latLng ->
-                        if (latLng != null) {
-                            cameraPosition.position = CameraPosition.fromLatLngZoom(latLng, 10f)
-                            viewModel.newLatLng=latLng
-                            // Update the marker position by setting updateLatLng to true
-                            updateLatLng = true
-
-                        } else {
-                            // Handle failure
+                            } else {
+                                // Handle failure
+                            }
                         }
-                    }
-                }, viewModel
+                    }, viewModel
 
-            )
-            // Observe changes in updateLatLng state variable
-            LaunchedEffect(updateLatLng) {
+                )
+                // Observe changes in updateLatLng state variable
+                LaunchedEffect(updateLatLng) {
                     // Update the marker position based on the latest value in the viewmodel
-                markerPosition = viewModel.newLatLng
-                updateLatLng=false
+                    markerPosition = viewModel.newLatLng
+                    updateLatLng=false
 
+                }
+                val navigateToLogin by viewModel.navigateToLogin.collectAsState()
+
+                if (navigateToLogin) {
+                    // Navigate to the Home screen
+                    navController.navigate(Screen.LoginScreen.toString())
+                }
             }
-
         }
+
     }
+
+
 }
 
 
@@ -184,4 +202,7 @@ fun LazyColumnWithSelection(
     LaunchedEffect(text) {
         selectedItemIndex.value = -1
     }
+
 }
+
+

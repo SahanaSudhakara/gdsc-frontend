@@ -43,8 +43,7 @@ fun NavigationGraph(
            // val userData by remember { mutableStateOf(googleAuthUiClient.getSignedInUser()) }
             val viewModel = MapViewModel(placesClient)
             HomeScreen(
-                viewModel = viewModel
-               // googleAuthUiClient = googleAuthUiClient
+                viewModel = viewModel,navController=navController
             )
         }
         composable(Screen.LoginScreen.toString()) {
