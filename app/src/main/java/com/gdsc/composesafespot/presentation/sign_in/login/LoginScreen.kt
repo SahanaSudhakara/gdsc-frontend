@@ -9,7 +9,10 @@ import com.gdsc.composesafespot.presentation.components.NormalTextComponent
 import com.gdsc.composesafespot.presentation.components.PasswordTextField
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.AlertDialog
+import androidx.compose.material.Button
 import androidx.compose.material.Surface
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -65,10 +68,24 @@ fun LoginScreen(navController: NavController, loginViewModel: LoginViewModel ) {
 
                 Spacer(modifier = Modifier.height(40.dp))
                 val navigateToHome by loginViewModel.navigateToHome.collectAsState()
+                val loginFailed by loginViewModel.loginFailed.collectAsState()
 
                 if (navigateToHome) {
                     // Navigate to the Home screen
                     navController.navigate(Screen.HomeScreen.toString())
+                }else if (loginFailed){
+                    AlertDialog(
+                        onDismissRequest = { loginViewModel.dismissLoginFailed() },
+                        title = { Text("Login Failed") },
+                        text = { Text("Incorrect email or password. Please try again.") },
+                        confirmButton = {
+                            Button(
+                                onClick = { loginViewModel.dismissLoginFailed() },
+                            ) {
+                                Text("OK")
+                            }
+                        }
+                    )
                 }
 
                 ButtonComponent(

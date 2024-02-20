@@ -22,6 +22,9 @@ class LoginViewModel : ViewModel() {
 
     var loginInProgress = mutableStateOf(false)
 
+    private val _loginFailed = MutableStateFlow(false)
+    val loginFailed: StateFlow<Boolean> = _loginFailed
+
 
 
     fun onEvent(event: LoginUIEvent) {
@@ -88,9 +91,14 @@ class LoginViewModel : ViewModel() {
                 Log.d(TAG,"${it.localizedMessage}")
 
                 loginInProgress.value = false
+                _loginFailed.value = true
 
             }
 
+    }
+
+    fun dismissLoginFailed() {
+        _loginFailed.value = false
     }
 
 }
