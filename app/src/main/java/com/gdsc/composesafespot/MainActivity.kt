@@ -16,8 +16,6 @@ import com.gdsc.composesafespot.presentation.navigation.NavigationGraph
 import com.gdsc.composesafespot.ui.theme.SignInGDSCArchitectureTheme
 
 class MainActivity : ComponentActivity() {
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
