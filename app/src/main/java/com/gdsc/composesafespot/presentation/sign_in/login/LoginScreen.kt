@@ -11,6 +11,7 @@ import com.gdsc.composesafespot.presentation.components.PasswordTextField
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.AlertDialog
 import androidx.compose.material.Button
@@ -61,11 +62,18 @@ fun LoginScreen(navController: NavController, loginViewModel: LoginViewModel) {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Spacer(modifier = Modifier.height(40.dp))
-            Image(
-                painter = painterResource(id = R.drawable.safespot),
-                contentDescription = "Logo",
-                modifier = Modifier.size(120.dp)
-            )
+            Box(
+                modifier = Modifier
+                    .size(120.dp)
+                    .clip(CircleShape)
+                    .background(Color.White),
+                contentAlignment = Alignment.Center
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.safespot),
+                    contentDescription = "Logo"
+                )
+            }
             Text(
                 text = "Login",
                 color = Color.White,
@@ -87,7 +95,7 @@ fun LoginScreen(navController: NavController, loginViewModel: LoginViewModel) {
                 },
                 errorStatus = loginViewModel.loginUIState.value.emailError
             )
-            Spacer(modifier = Modifier.height(16.dp)) // Add spacing between fields
+            Spacer(modifier = Modifier.height(16.dp))
             PasswordTextField(
                 labelValue = "Password",
                 painterResource(id = R.drawable.lock),
