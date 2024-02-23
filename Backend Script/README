@@ -1,0 +1,18 @@
+SafeSpotScript is a Python script designed to fetch police department data from "data.sfgov.org" related to incidents in San Francisco. 
+The script then processes the data to remove null values, utilizes latitude and longitude information, and categorizes locations as safe or not based on incident categories.
+
+Usage in Google Colab
+Open the Colab Notebook:
+Open the provided Colab notebook (SafeSpotScript.ipynb) in Google Colab.
+
+Run the Cells:
+Execute the cells in the notebook one by one to run the script step by step.
+
+Output:
+The notebook will generate processed data with removed null values and mark locations as safe or not on a Heatmap based on incident categories.
+
+Data Source:
+The script fetches data from "data.sfgov.org." Ensure you have a stable internet connection for successful data retrieval.
+
+Configuration
+You can customize the script behavior by modifying configuration parameters in the notebook.
