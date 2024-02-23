@@ -14,6 +14,7 @@ import com.gdsc.composesafespot.presentation.sign_in.login.LoginScreen
 import com.gdsc.composesafespot.presentation.sign_in.login.LoginViewModel
 import com.gdsc.composesafespot.presentation.sign_in.register.SignInScreen
 import com.gdsc.composesafespot.presentation.sign_in.register.SignInViewModel
+import com.gdsc.composesafespot.presentation.sign_in.login.SplashScreen
 
 @Composable
 fun NavigationGraph(
@@ -21,7 +22,17 @@ fun NavigationGraph(
     launcher: ActivityResultLauncher<IntentSenderRequest>,
     placesClient: PlacesClient
 ) {
-    NavHost(navController = navController, startDestination = Screen.LoginScreen.toString()) {
+    NavHost(navController = navController, startDestination = Screen.SplashScreen.toString()) {
+        composable(Screen.SplashScreen.toString()) {
+            SplashScreen(navController = navController)
+        }
+        composable(Screen.LoginScreen.toString()){
+            val viewModel= LoginViewModel()
+            LoginScreen(
+                navController = navController,
+                viewModel
+            )
+        }
         composable(Screen.SignUpScreen.toString()) {
             val viewModel=SignInViewModel()
 
@@ -36,10 +47,6 @@ fun NavigationGraph(
             HomeScreen(
                 viewModel = viewModel,navController=navController
             )
-        }
-        composable(Screen.LoginScreen.toString()) {
-            val viewModel = LoginViewModel()
-            LoginScreen(navController, viewModel)
         }
 
     }
