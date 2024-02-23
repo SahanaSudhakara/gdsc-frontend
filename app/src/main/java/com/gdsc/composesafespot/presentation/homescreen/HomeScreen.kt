@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Arrangement
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -20,12 +21,19 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.BottomSheetScaffold
+import androidx.compose.material.BottomSheetValue
+import androidx.compose.material.Button
+import androidx.compose.material.Card
 import androidx.compose.material.Icon
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.rememberBottomSheetScaffoldState
+import androidx.compose.material.rememberBottomSheetState
+import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
@@ -45,7 +53,9 @@ import androidx.navigation.NavController
 import com.google.maps.android.compose.MapUiSettings
 import com.gdsc.composesafespot.presentation.components.AppToolbar
 import com.gdsc.composesafespot.presentation.navigation.Screen
+import com.gdsc.composesafespot.ui.theme.Primary
 
+//
 @Composable
 fun HomeScreen(viewModel: MapViewModel, navController: NavController) {
     val state by viewModel.mapState
@@ -65,12 +75,41 @@ fun HomeScreen(viewModel: MapViewModel, navController: NavController) {
         }
     )
     {paddingValues ->
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.Top,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            val localFocusManager=LocalFocusManager.current
+            TextField(
+                modifier = Modifier.fillMaxWidth(),
+                value = text,
+                onValueChange = { text = it },
+                label = { Text("Search") },
+                leadingIcon = {
+                    Icon(
+                        Icons.Filled.Search,
+                        contentDescription = "Search",
+                        tint = Color.Black
+                    )
+                },
+                keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Search),
+                keyboardActions = KeyboardActions(onAny = {
+                    viewModel.onEvent(MapEvent.SearchName(text))
+                    // localFocusManager.clearFocus()
+                }),
+                shape = RoundedCornerShape(4.dp)
+            )
         Box(
-            modifier = Modifier.fillMaxSize().padding(paddingValues)
+            modifier = Modifier
+                .fillMaxSize()
+                .weight(1f)
+                .padding(paddingValues)
         ) {
             GoogleMap(
                 properties = state.properties,
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier
+                    .fillMaxWidth(),
                 cameraPositionState = cameraPosition,
                 uiSettings = MapUiSettings()
             ) {
@@ -83,34 +122,6 @@ fun HomeScreen(viewModel: MapViewModel, navController: NavController) {
                     )
                 }
             }
-
-            Column(
-                modifier = Modifier.fillMaxSize(),
-                verticalArrangement = Arrangement.Top,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                val localFocusManager=LocalFocusManager.current
-                TextField(
-                    modifier = Modifier.fillMaxWidth(),
-                    value = text,
-                    onValueChange = { text = it },
-                    label = { Text("Search") },
-                    leadingIcon = {
-                        Icon(
-                            Icons.Filled.Search,
-                            contentDescription = "Search",
-                            tint = Color.Black
-                        )
-                    },
-                    keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Search),
-                    keyboardActions = KeyboardActions(onAny = {
-                        viewModel.onEvent(MapEvent.SearchName(text))
-                        // localFocusManager.clearFocus()
-                    }),
-                    shape = RoundedCornerShape(4.dp)
-                )
-
-                Spacer(modifier = Modifier.height(16.dp))
 
                 LazyColumnWithSelection(
                     items = viewModel.locationAutofill,
@@ -144,6 +155,9 @@ fun HomeScreen(viewModel: MapViewModel, navController: NavController) {
                     // Navigate to the Home screen
                     navController.navigate(Screen.LoginScreen.toString())
                 }
+            }
+            if (selectedItem?.address != null) {
+                BottomCardView(location = text)
             }
         }
 
@@ -199,4 +213,30 @@ fun LazyColumnWithSelection(
 
 }
 
-
+@Composable
+fun BottomCardView(location: String) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp)
+    ) {
+        Card(
+            modifier = Modifier.fillMaxWidth(),
+            // Expand the Card to fill the available width
+            backgroundColor = Color.White,
+            shape = RoundedCornerShape(8.dp), // Rounded corners with an 8dp radius
+            elevation = 8.dp // Add elevation for a shadow effect
+        ) {
+            Column(
+                modifier = Modifier
+                    .padding(16.dp)
+                    .fillMaxWidth()
+            ) {
+                Text(text = location)
+                Button(onClick = { /* Launch Google Maps with directions */ }) {
+                    Text("Directions")
+                }
+            }
+        }
+    }
+}

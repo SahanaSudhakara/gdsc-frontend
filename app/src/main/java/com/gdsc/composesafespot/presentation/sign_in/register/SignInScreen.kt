@@ -1,20 +1,39 @@
 package com.gdsc.composesafespot.presentation.sign_in.register
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Button
+import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.gdsc.composesafespot.R
 import com.gdsc.composesafespot.presentation.components.ButtonComponent
 import com.gdsc.composesafespot.presentation.components.ClickableLoginTextComponent
@@ -31,17 +50,46 @@ fun SignInScreen(
     navController: NavController,
     signInViewModel: SignInViewModel,
 ) {
-    Surface(
-        color = Color.White,
+    Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.White)
-            .padding(28.dp)
+            .background(
+                brush = Brush.verticalGradient(
+                    colors = listOf(
+                        Color(0xFF3F51B5),
+                        Color(0xFF5C6BC0)
+                    ),
+                    startY = 0f,
+                    endY = 700f
+                )
+            )
     ) {
-        Column(modifier = Modifier.fillMaxSize()) {
-            NormalTextComponent(value = "Hey there,")
-            HeadingTextComponent(value = "Create an Account")
-            Spacer(modifier = Modifier.height(20.dp))
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(horizontal = 32.dp),
+            verticalArrangement = Arrangement.Top,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Spacer(modifier = Modifier.height(40.dp))
+            Image(
+                painter = painterResource(id = R.drawable.safespot),
+                contentDescription = "Logo",
+                modifier = Modifier.size(120.dp)
+            )
+            Text(
+                text = "Hey there,",
+                color = Color.White,
+                fontSize = 24.sp,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(vertical = 16.dp)
+            )
+            Text(
+                text = "Create an Account",
+                color = Color.White,
+                fontSize = 18.sp,
+                modifier = Modifier.padding(bottom = 32.dp)
+            )
             MyTextField(
                 labelValue = "First Name",
                 painter = painterResource(id = R.drawable.profile),
@@ -75,10 +123,6 @@ fun SignInScreen(
                 errorStatus = signInViewModel.registrationUIState.value.passwordError
             )
             Spacer(modifier = Modifier.height(20.dp))
-            // Click listener for the register button
-            val onRegisterButtonClick: () -> Unit = {
-                signInViewModel.onEvent(SignupUIEvent.RegisterButtonClicked)
-            }
 
             val navigateToHome by signInViewModel.navigateToHome.collectAsState()
 
@@ -87,37 +131,42 @@ fun SignInScreen(
                 navController.navigate(Screen.HomeScreen.toString())
             }
 
-
-            ButtonComponent(
-                value = "Register",
-                onButtonClicked = onRegisterButtonClick,
-                isEnabled = signInViewModel.allValidationsPassed.value
-            )
+            Button(
+                onClick = {
+                    signInViewModel.onEvent(SignupUIEvent.RegisterButtonClicked)
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(56.dp),
+                shape = RoundedCornerShape(50.dp),
+                enabled = signInViewModel.allValidationsPassed.value,
+                elevation = ButtonDefaults.elevation(4.dp),
+            ) {
+                Text(
+                    text = "Register",
+                    style = MaterialTheme.typography.button,
+                    color = Color.White
+                )
+            }
+            Spacer(modifier = Modifier.height(16.dp))
             DividerTextComponent()
-            ClickableLoginTextComponent(
-                tryingToLogin = true,
-                onTextSelected = {
-                    navController.navigate(Screen.LoginScreen.toString())
-                }
-            )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.Center
+            ) {
+                Text("Already have an account? ",
+                    color = Color.White
+                )
+                Text(
+                    text = "Login",
+                    color = Color.Yellow,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.clickable {
+                        navController.navigate(Screen.LoginScreen.toString())
+                    }
+                )
+            }
         }
     }
 }
 
-
-
-/*
-@Preview
-@Composable
-fun SignInScreenPreview(
-    state: RegistrationUIState = RegistrationUIState(isSignInSuccessful = true, signInError = null),
-    onSignInClick: () -> Unit = {},
-    navController: NavHostController = rememberNavController(),
-
-) {
-    SignInScreen(
-        state = state,
-        onSignInClick = onSignInClick,
-        navController = navController )
-}
-*/
