@@ -1,4 +1,4 @@
-package com.gdsc.composesafespot.presentation.sign_in.login
+package com.gdsc.composesafespot.view.sign_in.login
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -13,7 +13,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.gdsc.composesafespot.R
-import com.gdsc.composesafespot.presentation.navigation.Screen
+import com.gdsc.composesafespot.view.navigation.Screen
 import kotlinx.coroutines.delay
 import androidx.compose.ui.Modifier
 

@@ -1,4 +1,4 @@
-package com.gdsc.composesafespot.presentation.sign_in.login
+package com.gdsc.composesafespot.viewmodel.login
 
 sealed class LoginUIEvent{
 

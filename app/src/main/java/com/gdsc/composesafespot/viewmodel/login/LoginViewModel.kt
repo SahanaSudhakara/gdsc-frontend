@@ -1,10 +1,10 @@
-package com.gdsc.composesafespot.presentation.sign_in.login
+package com.gdsc.composesafespot.viewmodel.login
 
 import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.google.firebase.auth.FirebaseAuth
-import com.gdsc.composesafespot.presentation.sign_in.Validator
+import com.gdsc.composesafespot.viewmodel.utils.Validator
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 

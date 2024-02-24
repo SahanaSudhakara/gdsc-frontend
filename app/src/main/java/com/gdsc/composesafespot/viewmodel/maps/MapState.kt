@@ -1,4 +1,4 @@
-package com.gdsc.composesafespot.presentation.homescreen
+package com.gdsc.composesafespot.viewmodel.maps
 
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.MapProperties

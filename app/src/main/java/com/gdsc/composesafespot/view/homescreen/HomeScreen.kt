@@ -1,16 +1,14 @@
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.getValue
@@ -21,8 +19,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.BottomSheetScaffold
-import androidx.compose.material.BottomSheetValue
 import androidx.compose.material.Button
 import androidx.compose.material.Card
 import androidx.compose.material.Icon
@@ -31,14 +27,12 @@ import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.rememberBottomSheetScaffoldState
-import androidx.compose.material.rememberBottomSheetState
-import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
@@ -46,23 +40,39 @@ import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.rememberCameraPositionState
-import com.gdsc.composesafespot.presentation.homescreen.MapEvent
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.viewinterop.AndroidView
 import androidx.navigation.NavController
 import com.google.maps.android.compose.MapUiSettings
-import com.gdsc.composesafespot.presentation.components.AppToolbar
-import com.gdsc.composesafespot.presentation.navigation.Screen
-import com.gdsc.composesafespot.ui.theme.Primary
+import com.gdsc.composesafespot.view.components.AppToolbar
+import com.gdsc.composesafespot.view.navigation.Screen
+import com.gdsc.composesafespot.view.utils.parseJsonData
+import com.gdsc.composesafespot.view.utils.readJsonFromAssets
+import com.gdsc.composesafespot.view.utils.rememberMapViewWithLifecycle
+import com.gdsc.composesafespot.viewmodel.maps.AutocompleteResult
+import com.gdsc.composesafespot.viewmodel.maps.MapEvent
+import com.gdsc.composesafespot.viewmodel.maps.MapViewModel
+import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.gms.maps.model.TileOverlayOptions
+import com.google.maps.android.heatmaps.Gradient
+import com.google.maps.android.heatmaps.HeatmapTileProvider
+import com.google.maps.android.heatmaps.WeightedLatLng
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import org.json.JSONException
 
 //
 @Composable
 fun HomeScreen(viewModel: MapViewModel, navController: NavController) {
+    val context= LocalContext.current
     val state by viewModel.mapState
     var text by remember { mutableStateOf("") }
     val selectedItem by remember { mutableStateOf<AutocompleteResult?>(null) }
     var markerPosition by remember { mutableStateOf<LatLng?>(null) }
     var updateLatLng by remember { mutableStateOf(false) }
+    val mapView = rememberMapViewWithLifecycle()
 
     // MutableState to hold the camera position
     val cameraPosition = rememberCameraPositionState {
@@ -106,22 +116,86 @@ fun HomeScreen(viewModel: MapViewModel, navController: NavController) {
                 .weight(1f)
                 .padding(paddingValues)
         ) {
-            GoogleMap(
-                properties = state.properties,
-                modifier = Modifier
-                    .fillMaxWidth(),
-                cameraPositionState = cameraPosition,
-                uiSettings = MapUiSettings()
-            ) {
-                // Add Marker inside GoogleMap
-                markerPosition?.let { position ->
-                    Marker(
-                        state = MarkerState(position = position),
-                        title = "title",
-                        draggable = true
-                    )
+            AndroidView({ mapView }) { mapView ->
+                mapView.getMapAsync { googleMap ->
+                    CoroutineScope(Dispatchers.Main).launch {
+                        // Set camera position to San Francisco (SF)
+                        googleMap.uiSettings.isZoomControlsEnabled = true
+                        val sfLatLng = LatLng(37.7749, -122.4194)
+                  //      googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(sfLatLng, 10f))
+
+                        // Read JSON data from the assets directory
+                        val jsonArray = readJsonFromAssets(context, "data.json")
+                        jsonArray?.let { jsonArray ->
+                            try {
+                                // Parse JSON data and extract LatLng objects
+                                val latLngList = parseJsonData(jsonArray)
+
+                                if (latLngList.isEmpty()) {
+                                    Log.e("Heatmap", "No LatLng objects extracted from JSON data")
+                                } else {
+
+                                    // Create a heatmap data set
+                                    val heatmapData = mutableListOf<WeightedLatLng>()
+
+                                    // Add latitude and longitude of SF areas with intensity values
+                                    for (latLng in latLngList) {
+                                        heatmapData.add(
+                                            WeightedLatLng(
+                                                latLng,
+                                                60000.0
+                                            )
+                                        ) // Example intensity value
+                                    }
+
+                                    // Define the color gradient for the heatmap
+                                    val gradientColors = intArrayOf(
+                                        0xFF00FF00.toInt(), // Green
+                                        0xFFFFFF00.toInt() // Yellow
+                                    )
+                                    val gradientStartPoints = floatArrayOf(0.2f, 1.0f)
+                                    val gradient = Gradient(gradientColors, gradientStartPoints)
+
+                                    // Create a heatmap layer with the heatmap data set
+                                    val heatmapProvider = HeatmapTileProvider.Builder()
+                                        .weightedData(heatmapData)
+                                        .radius(50) // optional, in pixels, can be anything between 20 and 50
+                                        .maxIntensity(1000.0) // set the maximum intensity
+                                        .gradient(gradient)
+                                        .build()
+
+                                    // Add the heatmap layer to the map
+                                    googleMap.addTileOverlay(
+                                        TileOverlayOptions().tileProvider(
+                                            heatmapProvider
+                                        )
+                                    )
+
+                                    // Add markers to the map
+                                    val markerOptionsDestination = markerPosition?.let {
+                                        MarkerOptions()
+                                            //  .title("Restaurant Hubert")
+                                            .position(it)
+                                    }
+                                    if (markerOptionsDestination != null) {
+                                        googleMap.addMarker(markerOptionsDestination)
+                                    }
+
+
+
+
+                                }
+
+                            } catch (e: JSONException) {
+                                Log.e("Heatmap", "Error parsing JSON data: ${e.message}")
+                            }
+                        }
+                    }
                 }
+
+
             }
+        }
 
                 LazyColumnWithSelection(
                     items = viewModel.locationAutofill,
@@ -164,14 +238,13 @@ fun HomeScreen(viewModel: MapViewModel, navController: NavController) {
     }
 
 
-}
 
 
 @Composable
 fun LazyColumnWithSelection(
     items: MutableList<AutocompleteResult>,
     text: String,
-    onItemSelected: (AutocompleteResult) -> Unit,viewModel: MapViewModel
+    onItemSelected: (AutocompleteResult) -> Unit, viewModel: MapViewModel
 ) {
     // MutableState to hold the index of the selected item
     val selectedItemIndex = remember { mutableStateOf(-1) }

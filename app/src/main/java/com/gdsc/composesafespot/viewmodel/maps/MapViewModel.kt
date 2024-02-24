@@ -1,3 +1,5 @@
+package com.gdsc.composesafespot.viewmodel.maps
+
 import android.content.ContentValues.TAG
 import android.util.Log
 import androidx.compose.runtime.mutableStateListOf
@@ -11,8 +13,6 @@ import com.google.android.libraries.places.api.net.FetchPlaceRequest
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest
 import com.google.android.libraries.places.api.net.PlacesClient
 import com.google.firebase.auth.FirebaseAuth
-import com.gdsc.composesafespot.presentation.homescreen.MapEvent
-import com.gdsc.composesafespot.presentation.homescreen.MapState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow

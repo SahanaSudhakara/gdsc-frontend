@@ -1,4 +1,4 @@
-package com.gdsc.composesafespot.presentation.components
+package com.gdsc.composesafespot.view.components
 
 import android.util.Log
 import androidx.compose.foundation.background

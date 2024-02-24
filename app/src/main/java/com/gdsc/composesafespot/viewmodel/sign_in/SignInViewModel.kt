@@ -1,13 +1,13 @@
-package com.gdsc.composesafespot.presentation.sign_in.register
+package com.gdsc.composesafespot.viewmodel.sign_in
 
 import android.content.ContentValues.TAG
 import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.google.firebase.auth.FirebaseAuth
-import com.gdsc.composesafespot.presentation.navigation.NavigationAppRouter
-import com.gdsc.composesafespot.presentation.navigation.Screen
-import com.gdsc.composesafespot.presentation.sign_in.Validator
+import com.gdsc.composesafespot.view.navigation.NavigationAppRouter
+import com.gdsc.composesafespot.view.navigation.Screen
+import com.gdsc.composesafespot.viewmodel.utils.Validator
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 

@@ -10,9 +10,8 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.rememberNavController
-import com.google.android.gms.auth.api.identity.Identity
 import com.google.android.libraries.places.api.Places
-import com.gdsc.composesafespot.presentation.navigation.NavigationGraph
+import com.gdsc.composesafespot.view.navigation.NavigationGraph
 import com.gdsc.composesafespot.ui.theme.SignInGDSCArchitectureTheme
 
 class MainActivity : ComponentActivity() {

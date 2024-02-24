@@ -1,4 +1,4 @@
-package com.gdsc.composesafespot.presentation.navigation
+package com.gdsc.composesafespot.view.navigation
 
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf

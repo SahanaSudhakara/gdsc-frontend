@@ -1,7 +1,7 @@
-package com.gdsc.composesafespot.presentation.navigation
+package com.gdsc.composesafespot.view.navigation
 
 import HomeScreen
-import MapViewModel
+import com.gdsc.composesafespot.viewmodel.maps.MapViewModel
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.IntentSenderRequest
 import androidx.compose.runtime.Composable
@@ -10,11 +10,11 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.google.android.libraries.places.api.net.PlacesClient
-import com.gdsc.composesafespot.presentation.sign_in.login.LoginScreen
-import com.gdsc.composesafespot.presentation.sign_in.login.LoginViewModel
-import com.gdsc.composesafespot.presentation.sign_in.register.SignInScreen
-import com.gdsc.composesafespot.presentation.sign_in.register.SignInViewModel
-import com.gdsc.composesafespot.presentation.sign_in.login.SplashScreen
+import com.gdsc.composesafespot.view.sign_in.login.LoginScreen
+import com.gdsc.composesafespot.viewmodel.login.LoginViewModel
+import com.gdsc.composesafespot.view.sign_in.register.SignInScreen
+import com.gdsc.composesafespot.viewmodel.sign_in.SignInViewModel
+import com.gdsc.composesafespot.view.sign_in.login.SplashScreen
 
 @Composable
 fun NavigationGraph(
@@ -34,7 +34,7 @@ fun NavigationGraph(
             )
         }
         composable(Screen.SignUpScreen.toString()) {
-            val viewModel=SignInViewModel()
+            val viewModel= SignInViewModel()
 
             SignInScreen(
                 navController = navController,

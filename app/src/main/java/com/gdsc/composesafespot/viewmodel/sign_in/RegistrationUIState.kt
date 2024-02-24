@@ -1,4 +1,4 @@
-package com.gdsc.composesafespot.presentation.sign_in.register
+package com.gdsc.composesafespot.viewmodel.sign_in
 
 data class RegistrationUIState(
     var firstName :String = "",

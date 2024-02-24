@@ -1,13 +1,9 @@
-package com.gdsc.composesafespot.presentation.sign_in.login
+package com.gdsc.composesafespot.view.sign_in.login
 
 import androidx.compose.foundation.Image
-import com.gdsc.composesafespot.presentation.components.ButtonComponent
-import com.gdsc.composesafespot.presentation.components.ClickableLoginTextComponent
-import com.gdsc.composesafespot.presentation.components.DividerTextComponent
-import com.gdsc.composesafespot.presentation.components.HeadingTextComponent
-import com.gdsc.composesafespot.presentation.components.MyTextField
-import com.gdsc.composesafespot.presentation.components.NormalTextComponent
-import com.gdsc.composesafespot.presentation.components.PasswordTextField
+import com.gdsc.composesafespot.view.components.DividerTextComponent
+import com.gdsc.composesafespot.view.components.MyTextField
+import com.gdsc.composesafespot.view.components.PasswordTextField
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -16,10 +12,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.AlertDialog
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.Card
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.ProvideTextStyle
-import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -31,12 +24,13 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.font.FontWeight.Companion.Bold
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.gdsc.composesafespot.presentation.navigation.Screen
+import com.gdsc.composesafespot.view.navigation.Screen
 import com.gdsc.composesafespot.R
+import com.gdsc.composesafespot.viewmodel.login.LoginUIEvent
+import com.gdsc.composesafespot.viewmodel.login.LoginViewModel
 
 @Composable
 fun LoginScreen(navController: NavController, loginViewModel: LoginViewModel) {

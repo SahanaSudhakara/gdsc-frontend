@@ -1,4 +1,4 @@
-package com.gdsc.composesafespot.presentation.sign_in
+package com.gdsc.composesafespot.viewmodel.utils
 
 object Validator {
 
