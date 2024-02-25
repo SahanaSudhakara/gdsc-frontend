@@ -306,6 +306,7 @@ fun AppToolbar(
                 Icon(
                     imageVector = Icons.Filled.Logout,
                     contentDescription = "Logout",
+                    tint = Color.White
                 )
             }
         }
