@@ -156,6 +156,7 @@ private fun TopSection() {
     Box(
         contentAlignment = Alignment.TopCenter
     ) {
+
         Image(
             modifier = Modifier
                 .fillMaxWidth()
@@ -164,6 +165,7 @@ private fun TopSection() {
             contentDescription = null,
             contentScale = ContentScale.FillBounds
         )
+
         Box(
             modifier = Modifier
                 .size(120.dp)

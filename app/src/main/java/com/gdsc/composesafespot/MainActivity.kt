@@ -1,5 +1,6 @@
 package com.gdsc.composesafespot
 
+
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -9,11 +10,15 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.ui.Modifier
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.rememberNavController
+import com.gdsc.composesafespot.model.DataViewModel
 import com.google.android.libraries.places.api.Places
 import com.gdsc.composesafespot.view.navigation.NavigationGraph
 import com.gdsc.composesafespot.ui.theme.SignInGDSCArchitectureTheme
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
 
@@ -28,7 +33,6 @@ class MainActivity : ComponentActivity() {
                 ) {
                     val navController = rememberNavController()
 
-
                     val launcher = rememberLauncherForActivityResult(
                         contract = ActivityResultContracts.StartIntentSenderForResult(),
                         onResult = { result ->
@@ -39,14 +43,17 @@ class MainActivity : ComponentActivity() {
                     Places.initialize(applicationContext, BuildConfig.MAPS_API_KEY)
                     val placesClient = Places.createClient(this) // Use 'this' for context
 
+                    // Retrieve the DataViewModel using hiltViewModel
+                    val dataViewModel: DataViewModel = hiltViewModel()
+
                     NavigationGraph(
                         navController = navController,
-                        launcher = launcher,
+                        dataViewModel = dataViewModel,
                         placesClient = placesClient
                     )
-
                 }
             }
         }
     }
 }
+
