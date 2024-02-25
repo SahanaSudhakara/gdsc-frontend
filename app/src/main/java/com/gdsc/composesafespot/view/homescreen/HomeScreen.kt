@@ -53,6 +53,7 @@ import com.gdsc.composesafespot.view.utils.rememberMapViewWithLifecycle
 import com.gdsc.composesafespot.viewmodel.maps.AutocompleteResult
 import com.gdsc.composesafespot.viewmodel.maps.MapEvent
 import com.gdsc.composesafespot.viewmodel.maps.MapViewModel
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.maps.model.TileOverlayOptions
 import com.google.maps.android.heatmaps.Gradient
@@ -66,6 +67,8 @@ import org.json.JSONException
 //
 @Composable
 fun HomeScreen(viewModel: MapViewModel, navController: NavController) {
+    val systemUiController = rememberSystemUiController()
+    systemUiController.setStatusBarColor(color = Color(0xFF3F51B5))
     val context= LocalContext.current
     val state by viewModel.mapState
     var text by remember { mutableStateOf("") }
@@ -229,9 +232,9 @@ fun HomeScreen(viewModel: MapViewModel, navController: NavController) {
                     // Navigate to the Home screen
                     navController.navigate(Screen.LoginScreen.toString())
                 }
-            }
             if (selectedItem?.address != null) {
                 BottomCardView(location = text)
+            }
             }
         }
 

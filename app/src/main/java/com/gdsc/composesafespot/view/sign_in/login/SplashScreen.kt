@@ -16,9 +16,12 @@ import com.gdsc.composesafespot.R
 import com.gdsc.composesafespot.view.navigation.Screen
 import kotlinx.coroutines.delay
 import androidx.compose.ui.Modifier
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 @Composable
 fun SplashScreen(navController: NavController) {
+    val systemUiController = rememberSystemUiController()
+    systemUiController.setStatusBarColor(color = Color.White)
     Box(
         modifier = Modifier
             .fillMaxSize()

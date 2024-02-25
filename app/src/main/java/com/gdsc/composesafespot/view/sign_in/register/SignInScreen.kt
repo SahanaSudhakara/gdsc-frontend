@@ -39,6 +39,7 @@ import com.gdsc.composesafespot.view.components.PasswordTextField
 import com.gdsc.composesafespot.view.navigation.Screen
 import com.gdsc.composesafespot.viewmodel.sign_in.SignInViewModel
 import com.gdsc.composesafespot.viewmodel.sign_in.SignupUIEvent
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 
 @Composable
@@ -46,6 +47,8 @@ fun SignInScreen(
     navController: NavController,
     signInViewModel: SignInViewModel,
 ) {
+    val systemUiController = rememberSystemUiController()
+    systemUiController.setStatusBarColor(color = Color(0xFF3F51B5))
     Box(
         modifier = Modifier
             .fillMaxSize()
