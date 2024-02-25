@@ -284,8 +284,10 @@ fun AppToolbar(
         backgroundColor = Color(0xFF3F51B5),
         title = {
             Text(
-                text = toolbarTitle, color =  Color.White
+                text = toolbarTitle,
+                color = Color.White
             )
+
         },
         navigationIcon = {
             IconButton(onClick = {

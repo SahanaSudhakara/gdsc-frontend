@@ -11,7 +11,7 @@ import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import com.gdsc.composesafespot.R
-import com.gdsc.composesafespot.model.data.CrimeStatus
+import com.gdsc.composesafespot.data.CrimeStatus
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapView
 import com.google.android.gms.maps.model.LatLng

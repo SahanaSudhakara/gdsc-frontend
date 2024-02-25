@@ -1,3 +1,4 @@
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -16,6 +17,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.Button
+import androidx.compose.material.Card
 import androidx.compose.material.Icon
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
@@ -27,28 +30,49 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.rememberCameraPositionState
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.gdsc.composesafespot.model.DataViewModel
+import com.gdsc.composesafespot.data.CrimeStatus
+import com.gdsc.composesafespot.data.DataViewModel
+import com.google.maps.android.compose.MapUiSettings
 import com.gdsc.composesafespot.view.components.AppToolbar
 import com.gdsc.composesafespot.view.navigation.Screen
 import com.gdsc.composesafespot.view.utils.addHeatmapLayerToMap
 import com.gdsc.composesafespot.view.utils.convertDataToLatLngList
-
+import com.gdsc.composesafespot.view.utils.parseCrimeStatusList
+import com.gdsc.composesafespot.view.utils.parseJsonData
+import com.gdsc.composesafespot.view.utils.readJsonFromAssets
 import com.gdsc.composesafespot.view.utils.rememberMapViewWithLifecycle
 import com.gdsc.composesafespot.viewmodel.maps.AutocompleteResult
 import com.gdsc.composesafespot.viewmodel.maps.MapEvent
 import com.gdsc.composesafespot.viewmodel.maps.MapViewModel
-import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.gms.maps.model.TileOverlayOptions
+import com.google.maps.android.compose.Marker
+import com.google.maps.android.compose.MarkerState
+import com.google.maps.android.heatmaps.Gradient
+import com.google.maps.android.heatmaps.HeatmapTileProvider
+import com.google.maps.android.heatmaps.WeightedLatLng
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import org.json.JSONException
 
 @Composable
 fun HomeScreen(
@@ -67,8 +91,7 @@ fun HomeScreen(
     val cameraPosition = rememberCameraPositionState {
         position = CameraPosition.fromLatLngZoom(state.markerState, 10f)
     }
-    val systemUiController = rememberSystemUiController()
-    systemUiController.setStatusBarColor(color = Color(0xFF3F51B5))
+
     // Listen for changes in fetchingCrimeStatus
     LaunchedEffect(crimeStatusList) {
         // If crimeStatusList is not empty
@@ -145,7 +168,7 @@ fun HomeScreen(
                     mapView.getMapAsync { googleMap ->
                         // Set camera position to San Francisco (SF) or any default location
                         googleMap.uiSettings.isZoomControlsEnabled = true
-                        //    val sfLatLng = LatLng(37.7749, -122.4194)
+                    //    val sfLatLng = LatLng(37.7749, -122.4194)
                         googleMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition.position))
                         // Add markers to the map
 
