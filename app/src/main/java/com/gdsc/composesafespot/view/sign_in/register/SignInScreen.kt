@@ -122,7 +122,7 @@ fun SignInScreen(
             )
             PasswordTextField(
                 labelValue = "Password",
-                painter = painterResource(id = R.drawable.lock),
+                painter = painterResource(id = R.drawable.password),
                 onTextSelected = {
                     signInViewModel.onEvent(SignupUIEvent.PasswordChanged(it))
                 },

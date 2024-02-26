@@ -93,7 +93,7 @@ private fun LoginSection(loginViewModel: LoginViewModel, navController: NavContr
     Spacer(modifier = Modifier.height(16.dp))
     PasswordTextField(
         labelValue = "Password",
-        painterResource(id = R.drawable.lock),
+        painterResource(id = R.drawable.password),
         onTextSelected = {
             loginViewModel.onEvent(LoginUIEvent.PasswordChanged(it))
         },

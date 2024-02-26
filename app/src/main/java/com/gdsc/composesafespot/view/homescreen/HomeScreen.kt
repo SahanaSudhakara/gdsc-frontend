@@ -95,7 +95,7 @@ fun HomeScreen(
     var markerPosition by remember { mutableStateOf<LatLng?>(viewModel.newLatLng) }
     // MutableState to hold the camera position
     val cameraPosition = rememberCameraPositionState {
-        position = CameraPosition.fromLatLngZoom(state.markerState, 12f)
+        position = CameraPosition.fromLatLngZoom(state.markerState, 13f)
     }
 
     // Listen for changes in fetchingCrimeStatus
@@ -151,7 +151,7 @@ fun HomeScreen(
                     text = selectedItem.address
                     viewModel.getCoordinates(selectedItem) { latLng ->
                         if (latLng != null) {
-                            cameraPosition.position = CameraPosition.fromLatLngZoom(latLng, 10f)
+                            cameraPosition.position = CameraPosition.fromLatLngZoom(latLng, 13f)
                             viewModel.newLatLng = latLng
                             // Update the marker position by setting updateLatLng to true
                             updateLatLng = true
