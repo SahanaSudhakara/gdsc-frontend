@@ -37,7 +37,10 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.rememberCameraPositionState
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -45,6 +48,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.gdsc.composesafespot.model.DataViewModel
+import com.gdsc.composesafespot.model.data.CrimeStatus
 import com.google.maps.android.compose.MapUiSettings
 import com.gdsc.composesafespot.view.components.AppToolbar
 import com.gdsc.composesafespot.view.navigation.Screen
@@ -60,6 +64,7 @@ import com.gdsc.composesafespot.viewmodel.maps.MapViewModel
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.MarkerOptions
+import androidx.compose.material.Card
 import com.google.android.gms.maps.model.TileOverlayOptions
 import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.MarkerState
@@ -72,6 +77,7 @@ import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.json.JSONException
+import java.text.DecimalFormat
 
 @Composable
 fun HomeScreen(
@@ -179,10 +185,73 @@ fun HomeScreen(
 
             }
 
-            // Observe changes in updateLatLng state variable
+            var isUnsafeLocation by remember { mutableStateOf(false) }
+            var incidentCategory by remember { mutableStateOf("") }
+
+            val decimalFormat = DecimalFormat("#.##")
+
+            fun checkSafety(latitude: Double, longitude: Double) {
+                isUnsafeLocation = crimeStatusList.any { crime ->
+                    decimalFormat.format(crime.latitude.toDouble()) == decimalFormat.format(latitude) && decimalFormat.format(crime.longitude.toDouble()) == decimalFormat.format(longitude)
+                }
+                if (isUnsafeLocation) {
+                    incidentCategory = crimeStatusList.find { crime ->
+                        crime.latitude.toDouble() == latitude && crime.longitude.toDouble() == longitude
+                    }?.incident_category ?: ""
+                }
+            }
+
+            if (isUnsafeLocation) {
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    backgroundColor = Color.Red
+                ) {
+                    Column(
+                        modifier = Modifier.padding(16.dp)
+                    ) {
+                        Text(
+                            text = "Unsafe",
+                            color = Color.White,
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 18.sp
+                        )
+//                        Spacer(modifier = Modifier.height(8.dp))
+                        Text(
+                            text = incidentCategory,
+                            color = Color.White,
+                            fontSize = 14.sp
+                        )
+                    }
+                }
+            } else {
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    backgroundColor = Color.Green
+                ) {
+                    Column(
+                        modifier = Modifier.padding(16.dp)
+                    ) {
+                        Text(
+                            text = "Safe",
+                            color = Color.White,
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 18.sp
+                        )
+                    }
+                }
+            }
+
+        // Observe changes in updateLatLng state variable
             LaunchedEffect(updateLatLng) {
                 // Update the marker position based on the latest value in the viewmodel
                 markerPosition = viewModel.newLatLng
+                markerPosition?.let { position ->
+                    checkSafety(position.latitude, position.longitude)
+                }
                 updateLatLng = false
             }
 
