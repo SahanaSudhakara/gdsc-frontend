@@ -21,7 +21,7 @@ To address these issues, we've developed a user-friendly community policing app 
 
 ## Demo
 
-Click [here](https://youtu.be/SRGEAb4ZXmg) to watch a demo of the app in action.
+Click [here](https://youtu.be/MjYgtwP4DLY) to watch a demo of the app in action.
 
 ## Getting Started
 
