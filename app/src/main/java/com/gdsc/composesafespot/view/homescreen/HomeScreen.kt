@@ -44,8 +44,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.gdsc.composesafespot.data.CrimeStatus
-import com.gdsc.composesafespot.data.DataViewModel
+import com.gdsc.composesafespot.model.DataViewModel
 import com.google.maps.android.compose.MapUiSettings
 import com.gdsc.composesafespot.view.components.AppToolbar
 import com.gdsc.composesafespot.view.navigation.Screen
@@ -80,6 +79,7 @@ fun HomeScreen(
     navController: NavController,
     dataViewModel: DataViewModel = hiltViewModel()
 ) {
+
     val crimeStatusList by dataViewModel.crimeStatusList.collectAsStateWithLifecycle(emptyList())
     val mapView = rememberMapViewWithLifecycle()
     var text by remember { mutableStateOf("") }
