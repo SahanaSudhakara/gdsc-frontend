@@ -89,7 +89,7 @@ fun HomeScreen(
     var markerPosition by remember { mutableStateOf<LatLng?>(viewModel.newLatLng) }
     // MutableState to hold the camera position
     val cameraPosition = rememberCameraPositionState {
-        position = CameraPosition.fromLatLngZoom(state.markerState, 10f)
+        position = CameraPosition.fromLatLngZoom(state.markerState, 12f)
     }
 
     // Listen for changes in fetchingCrimeStatus

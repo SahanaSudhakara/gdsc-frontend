@@ -5,7 +5,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
-class DataViewModel @Inject constructor(private val crimeStatusService: CrimeStatusService): ViewModel() {
+     class DataViewModel @Inject constructor(private val crimeStatusService: CrimeStatusService): ViewModel() {
 
      val crimeStatusList =crimeStatusService.crimeStatus
 

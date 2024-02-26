@@ -16,7 +16,11 @@ import com.gdsc.composesafespot.model.DataViewModel
 import com.google.android.libraries.places.api.Places
 import com.gdsc.composesafespot.view.navigation.NavigationGraph
 import com.gdsc.composesafespot.ui.theme.SignInGDSCArchitectureTheme
+<<<<<<< Updated upstream
 import dagger.hilt.android.AndroidEntryPoint
+=======
+import com.gdsc.composesafespot.R
+>>>>>>> Stashed changes
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
