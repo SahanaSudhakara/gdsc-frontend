@@ -177,7 +177,6 @@ fun HomeScreen(
                     //    val sfLatLng = LatLng(37.7749, -122.4194)
                         googleMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition.position))
                         // Add markers to the map
-
                         googleMap.addMarker(markerOptionsDestination)
 
                     }
@@ -196,7 +195,7 @@ fun HomeScreen(
                 }
                 if (isUnsafeLocation) {
                     incidentCategory = crimeStatusList.find { crime ->
-                        crime.latitude.toDouble() == latitude && crime.longitude.toDouble() == longitude
+                        decimalFormat.format(crime.latitude.toDouble()) == decimalFormat.format(latitude) && decimalFormat.format(crime.longitude.toDouble()) == decimalFormat.format(longitude)
                     }?.incident_category ?: ""
                 }
             }
@@ -219,7 +218,7 @@ fun HomeScreen(
                         )
 //                        Spacer(modifier = Modifier.height(8.dp))
                         Text(
-                            text = incidentCategory,
+                            text = "Incident Category: $incidentCategory",
                             color = Color.White,
                             fontSize = 14.sp
                         )
